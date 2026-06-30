@@ -93,73 +93,83 @@ export const Results = ({
 
       {showDiagnostics && (
         <div className="mb-8 pl-2.5 max-w-[800px]">
-          <div className="bg-[#f8f9fa] border border-[#dadce0] p-4 font-mono text-[12px] text-[#333] shadow-inner">
-            <div className="flex flex-col md:flex-row gap-8">
+          <div className="bg-transparent border border-black p-4 font-sans text-[13px] text-black">
+            <div className="flex flex-col md:flex-row gap-6">
               {/* Query Analysis */}
               <div className="flex-1">
-                <h3 className="font-bold mb-3 uppercase text-[#555] tracking-wider text-[11px] border-b border-[#ddd] pb-1">
+                <div className="font-bold mb-2">
                   Token Extraction & Lexicon Hits
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {tokens?.map((tokenObj, idx) => {
-                    const word = Object.keys(tokenObj)[0];
-                    const count = tokenObj[word];
-                    return (
-                      <span key={idx} className="bg-[#e5e5e5] text-black px-2 py-1 border border-[#999999] rounded-sm flex items-center gap-2">
-                        <strong className="text-[13px]">{word}</strong>
-                        <span className="text-[#555] text-[10px] bg-white px-1 rounded border border-[#ccc]">
-                          {count.toLocaleString()} docs
-                        </span>
-                      </span>
-                    );
-                  })}
-                  {(!tokens || tokens.length === 0) && (
-                    <span className="text-[#777] italic text-[12px]">No token data available</span>
-                  )}
                 </div>
+                <table className="w-full border-collapse border border-black">
+                  <thead>
+                    <tr>
+                      <th className="border border-black p-1 text-left font-normal bg-[#e5e5e5]">Token</th>
+                      <th className="border border-black p-1 text-left font-normal bg-[#e5e5e5]">Documents</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tokens?.map((tokenObj, idx) => {
+                      const word = Object.keys(tokenObj)[0];
+                      const count = tokenObj[word];
+                      return (
+                        <tr key={idx}>
+                          <td className="border border-black p-1 font-bold">{word}</td>
+                          <td className="border border-black p-1">{count.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                    {(!tokens || tokens.length === 0) && (
+                      <tr>
+                        <td colSpan={2} className="border border-black p-1 italic text-[#777]">No token data available</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
 
               {/* Execution Trace */}
               <div className="flex-1">
-                <h3 className="font-bold mb-3 uppercase text-[#555] tracking-wider text-[11px] border-b border-[#ddd] pb-1">
+                <div className="font-bold mb-2">
                   Execution Times Waterfall
-                </h3>
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center border-b border-[#eee] pb-1">
-                    <span>Tokenization of query</span>
-                    <span className="text-[#008000]">{executionTimes?.tokenize?.toFixed(3) ?? '0.000'} ms</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-[#eee] pb-1">
-                    <span>Fetch corpus stats from DB</span>
-                    <span className="text-[#008000]">{executionTimes?.fetch_corpus_stats?.toFixed(3) ?? '0.000'} ms</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-[#eee] pb-1">
-                    <span>Binary Lexicon Seek</span>
-                    <span className="text-[#008000]">{executionTimes?.lexicon_seek_time?.toFixed(3) ?? '0.000'} ms</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-[#eee] pb-1">
-                    <span>Build postings list from postings file</span>
-                    <span className="text-[#008000]">{executionTimes?.posting_seek_time?.toFixed(3) ?? '0.000'} ms</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-[#eee] pb-1">
-                    <span>BM25 Computation</span>
-                    <span className="text-[#008000]">{executionTimes?.bm25_computation?.toFixed(3) ?? '0.000'} ms</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-[#eee] pb-1">
-                    <span>Merge Sort (k={kValue})</span>
-                    <span className="text-[#008000]">{executionTimes?.sort?.toFixed(3) ?? '0.000'} ms</span>
-                  </div>
-                  <div className="flex justify-between items-center font-bold pt-1">
-                    <span>Total Latency</span>
-                    <span className="text-[#D62121]">
-                      {executionTimes ? (
-                        Object.values(executionTimes).reduce((a, b) => a + b, 0).toFixed(3)
-                      ) : (
-                        '0.000'
-                      )} ms
-                    </span>
-                  </div>
                 </div>
+                <table className="w-full border-collapse border border-black">
+                  <tbody>
+                    <tr>
+                      <td className="border border-black p-1">Tokenization of query</td>
+                      <td className="border border-black p-1 text-[#008000]">{executionTimes?.tokenize?.toFixed(3) ?? '0.000'} ms</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-1">Fetch corpus stats from DB</td>
+                      <td className="border border-black p-1 text-[#008000]">{executionTimes?.fetch_corpus_stats?.toFixed(3) ?? '0.000'} ms</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-1">Binary Lexicon Seek</td>
+                      <td className="border border-black p-1 text-[#008000]">{executionTimes?.lexicon_seek_time?.toFixed(3) ?? '0.000'} ms</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-1">Build postings list from postings file</td>
+                      <td className="border border-black p-1 text-[#008000]">{executionTimes?.posting_seek_time?.toFixed(3) ?? '0.000'} ms</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-1">BM25 Computation</td>
+                      <td className="border border-black p-1 text-[#008000]">{executionTimes?.bm25_computation?.toFixed(3) ?? '0.000'} ms</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-1">Merge Sort (k={kValue})</td>
+                      <td className="border border-black p-1 text-[#008000]">{executionTimes?.sort?.toFixed(3) ?? '0.000'} ms</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-black p-1 font-bold">Total Latency</td>
+                      <td className="border border-black p-1 font-bold text-[#D62121]">
+                        {executionTimes ? (
+                          Object.values(executionTimes).reduce((a, b) => a + b, 0).toFixed(3)
+                        ) : (
+                          '0.000'
+                        )} ms
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
