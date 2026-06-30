@@ -104,10 +104,6 @@ export const Home = ({ onSearch }: HomeProps) => {
 
         {crawledPages !== null && <StatsBadge crawledPages={crawledPages} />}
       </div>
-
-      <div className="absolute bottom-2.5 w-full text-center text-xs">
-        © 2026 Yoink
-      </div>
     </div>
   );
 };
