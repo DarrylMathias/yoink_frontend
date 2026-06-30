@@ -1,4 +1,5 @@
-import { SearchResult } from '../types';
+import type { SearchResult } from '../types';
+import { LinkPreview } from './ui/link-preview';
 
 interface ResultsListProps {
   isLoading: boolean;
@@ -37,32 +38,30 @@ export const ResultsList = ({ isLoading, error, results, query }: ResultsListPro
   }
 
   return (
-    <div className="pl-2.5 max-w-[600px]">
+    <div className="pl-2.5 max-w-[600px] mt-2">
       {results.map((r, i) => (
-        <div className="mb-5" key={i}>
+        <div className="mb-6" key={i}>
+          {/* Result Content */}
           <div>
-            <a
-              href={r.url}
+            <LinkPreview
+              url={r.url}
               className="text-[16px] text-[#0000cc] underline mb-0.5 inline-block"
             >
               {r.title || r.url || 'Untitled Document'}
-            </a>
+            </LinkPreview>
           </div>
-          <div className="text-[13px] text-black leading-[1.2]">
-            {r.snippet ||
-              r.description ||
-              r.content ||
-              'No description available for this result.'}
+          <div className="text-[13px] text-black leading-[1.2] mb-1">
+            {r.description || 'No description available for this result.'}
           </div>
           <div className="text-[13px] text-[#008000]">
             {r.url} -{' '}
-            <a href="#" className="text-[#7777cc] underline">
-              Cached
-            </a>{' '}
+            <span className="text-[#555]">
+              No of inverted index entries: {r.document_length}
+            </span>{' '}
             -{' '}
-            <a href="#" className="text-[#7777cc] underline">
-              Similar pages
-            </a>
+            <span className="text-[#555]">
+              Last crawled at {(new Date(r.crawl_time * 1000)).toLocaleString()}
+            </span>
           </div>
         </div>
       ))}

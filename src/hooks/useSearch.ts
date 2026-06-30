@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SearchResult } from '../types';
+import type { SearchResult } from '../types';
 
 export const useSearch = () => {
   const [isLoading, setIsLoading] = useState(false);

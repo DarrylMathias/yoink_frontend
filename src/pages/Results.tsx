@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Logo } from '../components/Logo';
 import { ResultsList } from '../components/ResultsList';
-import { SearchResult } from '../types';
+import type { SearchResult } from '../types';
 
 interface ResultsProps {
   initialQuery: string;
