@@ -10,10 +10,10 @@ export const useSearch = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   const searchMutation = useMutation({
-    mutationFn: async (searchQuery: string) => {
+    mutationFn: async ({ searchQuery, k }: { searchQuery: string; k: number }) => {
       const start = performance.now();
       const response = await apiClient.get('/query', {
-        params: { q: searchQuery, k: 10 }
+        params: { q: searchQuery, k }
       });
       const end = performance.now();
       return { data: response.data, time: (end - start) / 1000 };
@@ -47,10 +47,10 @@ export const useSearch = () => {
     }
   });
 
-  const fetchResults = (searchQuery: string) => {
+  const fetchResults = (searchQuery: string, k: number = 10) => {
     if (!searchQuery.trim()) return;
     setHasSearched(true);
-    searchMutation.mutate(searchQuery);
+    searchMutation.mutate({ searchQuery, k });
   };
 
   const resetSearch = () => {

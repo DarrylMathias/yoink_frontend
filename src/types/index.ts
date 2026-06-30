@@ -4,4 +4,5 @@ export interface SearchResult {
   description: string;
   crawl_time: number;
   document_length: number;
+  BM25_rating: number;
 }

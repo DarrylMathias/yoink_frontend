@@ -1,25 +1,57 @@
 import React, { useState } from 'react';
+import { apiClient } from '../api/client';
 import { Logo } from '../components/Logo';
 import { StatsBadge } from '../components/StatsBadge';
 import { useCrawledStats } from '../hooks/useCrawledStats';
 
 interface HomeProps {
-  onSearch: (query: string) => void;
+  onSearch: (query: string, k: number) => void;
 }
 
 export const Home = ({ onSearch }: HomeProps) => {
   const [query, setQuery] = useState('');
+  const [kValue, setKValue] = useState(10);
+  const [isLuckyLoading, setIsLuckyLoading] = useState(false);
   const crawledPages = useCrawledStats();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(query);
+    onSearch(query, kValue);
   };
 
-  const handleLucky = (e: React.MouseEvent) => {
+  const handleLucky = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-    alert(`I'm feeling lucky: ${query}`);
+    
+    setIsLuckyLoading(true);
+    try {
+      const response = await apiClient.get('/query', {
+        params: { q: query, k: 1 }
+      });
+      
+      const data = response.data;
+      let topResult = null;
+      
+      if (Array.isArray(data) && data.length > 0) {
+        topResult = data[0];
+      } else if (data?.results && Array.isArray(data.results) && data.results.length > 0) {
+        topResult = data.results[0];
+      } else if (data?.data && Array.isArray(data.data) && data.data.length > 0) {
+        topResult = data.data[0];
+      }
+
+      if (topResult && topResult.url) {
+        window.location.href = topResult.url;
+      } else {
+        // Fallback to normal search if no results found
+        onSearch(query, kValue);
+      }
+    } catch (error) {
+      console.error("Failed to fetch lucky result:", error);
+      onSearch(query, kValue);
+    } finally {
+      setIsLuckyLoading(false);
+    }
   };
 
   return (
@@ -33,13 +65,25 @@ export const Home = ({ onSearch }: HomeProps) => {
         </div>
 
         <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="w-[400px] h-[25px] border border-[#7E9CB1] px-1.5 py-0.5 font-sans text-sm mb-3"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoFocus
-          />
+          <div className="flex items-center gap-2 mb-3">
+            <input
+              type="text"
+              className="w-[400px] h-[30px] border border-[#7E9CB1] px-2 font-sans text-sm outline-none focus:border-[#3366cc]"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              autoFocus
+            />
+            <select
+              className="h-[30px] border border-[#7E9CB1] px-1 text-sm bg-white text-[#555] cursor-pointer outline-none focus:border-[#3366cc]"
+              value={kValue}
+              onChange={(e) => setKValue(Number(e.target.value))}
+            >
+              <option value={10}>Top 10</option>
+              <option value={20}>Top 20</option>
+              <option value={50}>Top 50</option>
+              <option value={100}>Top 100</option>
+            </select>
+          </div>
           <div className="flex gap-1.5">
             <button
               type="submit"
@@ -49,10 +93,11 @@ export const Home = ({ onSearch }: HomeProps) => {
             </button>
             <button
               type="button"
-              className="bg-[#e5e5e5] border border-[#999999] font-sans text-[13px] px-2 py-0.5 cursor-pointer text-black active:border-inset"
               onClick={handleLucky}
+              disabled={isLuckyLoading}
+              className="bg-[#e5e5e5] border border-[#999999] font-sans text-[13px] px-2 py-0.5 cursor-pointer text-black active:border-inset disabled:opacity-50"
             >
-              I'm Feeling Lucky
+              {isLuckyLoading ? 'Yoinking...' : "I'm Feeling Yoinky!"}
             </button>
           </div>
         </form>
