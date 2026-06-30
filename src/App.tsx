@@ -1,61 +1,38 @@
 import { useState } from 'react';
+import { Home } from './pages/Home';
+import { Results } from './pages/Results';
+import { useSearch } from './hooks/useSearch';
 import './App.css';
 
 function App() {
-  const [query, setQuery] = useState('');
+  const { isLoading, results, searchTime, error, hasSearched, fetchResults, resetSearch } = useSearch();
+  const [activeQuery, setActiveQuery] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    // In Phase 2, this will navigate to a results page or fetch results
-    console.log("Searching for:", query);
-    alert(`Searching for: ${query} (Phase 2 will implement results)`);
+  const handleSearch = (query: string) => {
+    setActiveQuery(query);
+    fetchResults(query);
   };
 
-  const handleLucky = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    console.log("I'm feeling lucky:", query);
-    alert(`I'm feeling lucky: ${query}`);
+  const handleReset = () => {
+    setActiveQuery('');
+    resetSearch();
   };
 
-  return (
-    <div>
-      <div className="search-container">
-        <div className="logo-text">
-          <span className="logo-y">Y</span>
-          <span className="logo-o">o</span>
-          <span className="logo-i">i</span>
-          <span className="logo-n">n</span>
-          <span className="logo-k">k</span>
-          <span className="logo-ex">!</span>
-        </div>
-        <div className="subtitle">yoink - the search engine that yoinks data from the depths of the web</div>
-        
-        <form className="search-form" onSubmit={handleSearch}>
-          <input
-            type="text"
-            className="search-input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoFocus
-          />
-          <div className="button-container">
-            <button type="submit" className="search-button">
-              Yoink Search
-            </button>
-            <button type="button" className="search-button" onClick={handleLucky}>
-              I'm Feeling Lucky
-            </button>
-          </div>
-        </form>
-      </div>
+  if (hasSearched) {
+    return (
+      <Results
+        initialQuery={activeQuery}
+        results={results}
+        isLoading={isLoading}
+        error={error}
+        searchTime={searchTime}
+        onSearch={handleSearch}
+        onReset={handleReset}
+      />
+    );
+  }
 
-      <div className="footer">
-        © 2026 Yoink
-      </div>
-    </div>
-  );
+  return <Home onSearch={handleSearch} />;
 }
 
 export default App;
