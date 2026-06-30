@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@radix-ui/react-hover-card": "^1.1.17",
+    "@tanstack/react-query": "^5.101.2",
+    "axios": "^1.18.1",
     "clsx": "^2.1.1",
     "motion": "^12.42.1",
     "qss": "^3.0.0",

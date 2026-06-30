@@ -1,33 +1,27 @@
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { apiClient } from '../api/client';
 import type { SearchResult } from '../types';
 
 export const useSearch = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searchTime, setSearchTime] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const fetchResults = async (searchQuery: string) => {
-    if (!searchQuery.trim()) return;
-    setIsLoading(true);
-    setHasSearched(true);
-    setError(null);
-    const start = performance.now();
-
-    try {
-      const res = await fetch(
-        `https://yoink.darrylmathias.tech/api/query?q=${encodeURIComponent(
-          searchQuery
-        )}&k=10`
-      );
-
-      if (!res.ok) {
-        throw new Error(`Server returned ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-
+  const searchMutation = useMutation({
+    mutationFn: async (searchQuery: string) => {
+      const start = performance.now();
+      const response = await apiClient.get('/query', {
+        params: { q: searchQuery, k: 10 }
+      });
+      const end = performance.now();
+      return { data: response.data, time: (end - start) / 1000 };
+    },
+    onSuccess: ({ data, time }) => {
+      setSearchTime(time);
+      setErrorMsg(null);
+      
       let parsedResults: SearchResult[] = [];
       if (Array.isArray(data)) {
         parsedResults = data;
@@ -36,28 +30,43 @@ export const useSearch = () => {
       } else if (data && data.data && Array.isArray(data.data)) {
         parsedResults = data.data;
       }
-
+      
       setResults(parsedResults);
-    } catch (err: unknown) {
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
       console.error(err);
-      if (err instanceof Error) {
-        setError(err.message || 'An error occurred while fetching results.');
+      if (err.response?.data?.message) {
+        setErrorMsg(err.response.data.message);
+      } else if (err.message) {
+        setErrorMsg(err.message || 'An error occurred while fetching results.');
       } else {
-        setError('An unknown error occurred.');
+        setErrorMsg('An unknown error occurred.');
       }
       setResults([]);
-    } finally {
-      const end = performance.now();
-      setSearchTime((end - start) / 1000);
-      setIsLoading(false);
     }
+  });
+
+  const fetchResults = (searchQuery: string) => {
+    if (!searchQuery.trim()) return;
+    setHasSearched(true);
+    searchMutation.mutate(searchQuery);
   };
 
   const resetSearch = () => {
     setHasSearched(false);
     setResults([]);
-    setError(null);
+    setErrorMsg(null);
+    searchMutation.reset();
   };
 
-  return { isLoading, results, searchTime, error, hasSearched, fetchResults, resetSearch };
+  return {
+    isLoading: searchMutation.isPending,
+    results,
+    searchTime,
+    error: errorMsg,
+    hasSearched,
+    fetchResults,
+    resetSearch
+  };
 };

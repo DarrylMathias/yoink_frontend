@@ -1,24 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '../api/client';
 
 export const useCrawledStats = () => {
-  const [crawledPages, setCrawledPages] = useState<number | null>(null);
+  const { data } = useQuery({
+    queryKey: ['crawledPages'],
+    queryFn: async () => {
+      const response = await apiClient.get('/crawledPages');
+      const data = response.data;
+      
+      if (typeof data === 'number') {
+        return data;
+      } else if (data && typeof data.count === 'number') {
+        return data.count;
+      } else if (data && typeof data.total === 'number') {
+        return data.total;
+      } else if (data && typeof data.pages === 'number') {
+        return data.pages;
+      }
+      return null;
+    },
+    staleTime: 60000, // cache for 1 minute
+  });
 
-  useEffect(() => {
-    fetch('https://yoink.darrylmathias.tech/api/crawledPages')
-      .then((res) => res.json())
-      .then((data) => {
-        if (typeof data === 'number') {
-          setCrawledPages(data);
-        } else if (data && typeof data.count === 'number') {
-          setCrawledPages(data.count);
-        } else if (data && typeof data.total === 'number') {
-          setCrawledPages(data.total);
-        } else if (data && typeof data.pages === 'number') {
-          setCrawledPages(data.pages);
-        }
-      })
-      .catch((err) => console.error('Error fetching crawled pages:', err));
-  }, []);
-
-  return crawledPages;
+  return data ?? null;
 };

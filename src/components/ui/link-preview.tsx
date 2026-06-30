@@ -55,6 +55,7 @@ export const LinkPreview = ({
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
 
@@ -63,6 +64,7 @@ export const LinkPreview = ({
 
   const translateX = useSpring(x, springConfig);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMouseMove = (event: any) => {
     const targetRect = event.target.getBoundingClientRect();
     const eventOffsetX = event.clientX - targetRect.left;
