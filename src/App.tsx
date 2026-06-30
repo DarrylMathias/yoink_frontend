@@ -6,7 +6,7 @@ import { LinkPreview } from './components/ui/link-preview';
 import './App.css';
 
 function App() {
-  const { isLoading, results, searchTime, error, hasSearched, fetchResults, resetSearch } = useSearch();
+  const { isLoading, results, tokens, executionTimes, searchTime, error, hasSearched, fetchResults, resetSearch } = useSearch();
   const [activeQuery, setActiveQuery] = useState('');
   const [activeK, setActiveK] = useState(10);
 
@@ -73,6 +73,8 @@ function App() {
           initialQuery={activeQuery}
           initialK={activeK}
           results={results}
+          tokens={tokens}
+          executionTimes={executionTimes}
           isLoading={isLoading}
           error={error}
           searchTime={searchTime}

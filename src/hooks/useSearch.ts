@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '../api/client';
-import type { SearchResult } from '../types';
+import type { SearchResult, ExecutionTimes } from '../types';
 
 export const useSearch = () => {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searchTime, setSearchTime] = useState(0);
+  const [tokens, setTokens] = useState<Record<string, number>[]>([]);
+  const [executionTimes, setExecutionTimes] = useState<ExecutionTimes | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -29,6 +31,13 @@ export const useSearch = () => {
         parsedResults = data.results;
       } else if (data && data.data && Array.isArray(data.data)) {
         parsedResults = data.data;
+      }
+      
+      if (data && data.tokens) {
+        setTokens(data.tokens);
+      }
+      if (data && data.execution_times) {
+        setExecutionTimes(data.execution_times);
       }
       
       setResults(parsedResults);
@@ -56,6 +65,8 @@ export const useSearch = () => {
   const resetSearch = () => {
     setHasSearched(false);
     setResults([]);
+    setTokens([]);
+    setExecutionTimes(null);
     setErrorMsg(null);
     searchMutation.reset();
   };
@@ -63,6 +74,8 @@ export const useSearch = () => {
   return {
     isLoading: searchMutation.isPending,
     results,
+    tokens,
+    executionTimes,
     searchTime,
     error: errorMsg,
     hasSearched,
