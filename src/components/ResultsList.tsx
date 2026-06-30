@@ -56,11 +56,11 @@ export const ResultsList = ({ isLoading, error, results, query }: ResultsListPro
           </div>
 
           {/* Result Content */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0 pr-4 sm:pr-0">
             <div>
               <LinkPreview
                 url={r.url}
-                className="text-[16px] text-[#0000cc] underline mb-0.5 inline-block"
+                className="text-[16px] text-[#0000cc] underline mb-0.5 inline-block break-words w-full"
               >
                 {r.title || r.url || 'Untitled Document'}
               </LinkPreview>

@@ -52,8 +52,8 @@ function App() {
   };
 
   return (
-    <>
-      <div className="absolute top-3 right-4 flex items-center gap-4 font-sans text-[13px]">
+    <div className="overflow-x-hidden min-h-screen">
+      <div className="absolute top-3 right-4 flex items-center gap-4 font-sans text-[13px] z-50">
         <LinkPreview 
           url="https://github.com/DarrylMathias/yoink" 
           className="text-black hover:underline opacity-80 hover:opacity-100"
@@ -84,7 +84,7 @@ function App() {
       ) : (
         <Home onSearch={handleSearch} />
       )}
-    </>
+    </div>
   );
 }
 

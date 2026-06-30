@@ -39,18 +39,18 @@ export const Results = ({
 
   return (
     <div className="p-3.5 px-2.5 font-sans">
-      <div className="flex items-center gap-4 border-b border-[#e5e5e5] pb-4 mb-1.5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-b border-[#e5e5e5] pb-4 mb-1.5 sm:pr-[140px]">
         <div
-          className="font-serif text-[32px] font-bold tracking-[-1px] cursor-pointer"
+          className="font-serif text-[32px] font-bold tracking-[-1px] cursor-pointer shrink-0 whitespace-nowrap"
           onClick={onReset}
         >
           <Logo isResultsPage={true} />
         </div>
-        <form className="flex items-center gap-2.5" onSubmit={handleSubmit}>
-          <div className="flex items-center gap-1">
+        <form className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full sm:w-auto" onSubmit={handleSubmit}>
+          <div className="flex items-center gap-1 w-full sm:w-auto max-w-[100vw] sm:max-w-none pr-4 sm:pr-0">
             <input
               type="text"
-              className="w-[350px] h-[30px] border border-[#7E9CB1] px-1.5 py-0.5 font-sans text-sm m-0 outline-none focus:border-[#3366cc]"
+              className="flex-1 sm:w-[350px] h-[30px] min-w-0 border border-[#7E9CB1] px-1.5 py-0.5 font-sans text-sm m-0 outline-none focus:border-[#3366cc]"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -67,7 +67,7 @@ export const Results = ({
           </div>
           <button
             type="submit"
-            className="bg-[#e5e5e5] border border-[#999999] font-sans text-[13px] px-2 py-0.5 cursor-pointer text-black active:border-inset"
+            className="bg-[#e5e5e5] border border-[#999999] font-sans text-[13px] px-2 py-0.5 cursor-pointer text-black active:border-inset whitespace-nowrap shrink-0"
           >
             Yoink Search
           </button>
@@ -78,12 +78,9 @@ export const Results = ({
         <div>
           Searched the depths of the web for <b>{initialQuery}</b>.
         </div>
-        <div>
-          Results 1 - {results.length}.
-        </div>
       </div>
 
-      <div className="text-[13px] text-[#70757a] mb-4 pl-2.5 flex items-center gap-3">
+      <div className="text-[13px] text-[#70757a] mb-4 pl-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span>Search completed in {searchTime.toFixed(3)} seconds.</span>
         <button
           type="button"

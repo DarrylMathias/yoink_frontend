@@ -57,10 +57,10 @@ export const Home = ({ onSearch }: HomeProps) => {
   return (
     <div>
       <div className="mt-[15%] flex flex-col items-center">
-        <div className="font-serif text-[80px] font-bold tracking-[-2px] mb-2.5">
+        <div className="font-serif text-[80px] font-bold tracking-[-2px] mb-2.5 shrink-0 whitespace-nowrap">
           <Logo />
         </div>
-        <div className="font-sans text-[13px] text-[#555] mb-5">
+        <div className="font-sans text-[13px] text-[#555] mb-5 text-center px-4">
           yoink - the search engine that yoinks data from the depths of the web
         </div>
 
@@ -68,7 +68,7 @@ export const Home = ({ onSearch }: HomeProps) => {
           <div className="flex items-center gap-2 mb-3">
             <input
               type="text"
-              className="w-[400px] h-[30px] border border-[#7E9CB1] px-2 font-sans text-sm outline-none focus:border-[#3366cc]"
+              className="w-[70vw] sm:w-[400px] h-[30px] border border-[#7E9CB1] px-2 font-sans text-sm outline-none focus:border-[#3366cc]"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
