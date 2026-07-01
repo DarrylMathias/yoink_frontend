@@ -4,6 +4,7 @@ import { Results } from './pages/Results';
 import { SubmitUrl } from './pages/SubmitUrl';
 import { useSearch } from './hooks/useSearch';
 import { LinkPreview } from './components/ui/link-preview';
+import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/react';
 import './App.css';
 
 function App() {
@@ -87,6 +88,13 @@ function App() {
         >
           Creator
         </LinkPreview>
+        <Show when="signed-out">
+          <SignInButton />
+          <SignUpButton />
+        </Show>
+        <Show when="signed-in">
+          <UserButton />
+        </Show>
       </div>
 
       {isSubmitPage ? (
