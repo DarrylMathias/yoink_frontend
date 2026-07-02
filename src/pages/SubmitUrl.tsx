@@ -46,7 +46,14 @@ export const SubmitUrl = ({ onBack }: SubmitUrlProps) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setStatus('error');
-      setError(err.response?.data?.message || err.message || 'An error occurred while submitting.');
+      const statusCode = err.response?.status;
+      const serverMessage = err.response?.data?.message || err.response?.data?.error || err.message || 'An error occurred while submitting.';
+      
+      if (statusCode) {
+        setError(`Error ${statusCode}: ${serverMessage}`);
+      } else {
+        setError(serverMessage);
+      }
     }
   };
 
@@ -73,7 +80,7 @@ export const SubmitUrl = ({ onBack }: SubmitUrlProps) => {
       <div className="max-w-[600px] ml-2 mt-4 text-[13px] text-black leading-relaxed">
         <h2 className="text-[#0000cc] text-[16px] mb-2 font-normal underline">Submit your own websites to the Yoink Index</h2>
         <p className="mb-4">
-          This feature allows you to submit any public URL to our distributed crawling pipeline. 
+          This feature allows you to submit <b>any 5 public URLs</b> to our distributed crawling pipeline. 
         </p>
         <p className="mb-4">
           Once submitted, our backend Go workers will automatically fetch, parse, tokenize, and add your website's documents directly into the global Inverted Index, making it instantly searchable across the entire Yoink network.
@@ -123,7 +130,7 @@ export const SubmitUrl = ({ onBack }: SubmitUrlProps) => {
               </button>
             </div>
             {status === 'success' && (
-              <span className="text-[#006621] font-bold mt-2">Successfully submitted to the indexing pipeline!</span>
+              <span className="text-[#006621] font-bold mt-2">Successfully submitted to the indexing pipeline! You'll be receiving an email when your website is indexed.</span>
             )}
           </form>
         </div>
