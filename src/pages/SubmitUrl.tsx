@@ -83,7 +83,7 @@ export const SubmitUrl = ({ onBack }: SubmitUrlProps) => {
           This feature allows you to submit <b>any 5 public URLs</b> to our distributed crawling pipeline. 
         </p>
         <p className="mb-4">
-          Once submitted, our backend Go workers will automatically fetch, parse, tokenize, and add your website's documents directly into the global Inverted Index, making it instantly searchable across the entire Yoink network.
+          Once submitted, our backend Go workers will automatically fetch, parse, tokenize, and add your website's documents directly into the global Inverted Index, making it instantly searchable across the entire Yoink network
         </p>
 
         <div className="mt-8">
