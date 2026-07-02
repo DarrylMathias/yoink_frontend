@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Logo } from '../components/Logo';
-import { useUser, SignInButton } from '@clerk/react';
+import { useUser, SignInButton, useAuth } from '@clerk/react';
 import { z } from 'zod';
 import { apiClient } from '../api/client';
 
@@ -12,6 +12,7 @@ const urlSchema = z.string().url("Please enter a valid URL (e.g., https://exampl
 
 export const SubmitUrl = ({ onBack }: SubmitUrlProps) => {
   const { isSignedIn } = useUser();
+  const { getToken } = useAuth();
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -33,7 +34,12 @@ export const SubmitUrl = ({ onBack }: SubmitUrlProps) => {
 
     setStatus('loading');
     try {
-      await apiClient.post('/url', { url });
+      const token = await getToken();
+      await apiClient.post('/url', { url }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setStatus('success');
       setUrl('');
       setError('');
